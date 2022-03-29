@@ -1,0 +1,18 @@
+.spinner {
+  width: 75px;
+  height: 75px;
+  animation: rotate 1s linear infinite;
+
+  & .path {
+    stroke: hsl(210, 100%, 75%);
+    stroke-linecap: round;
+    stroke-dasharray: 35;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}

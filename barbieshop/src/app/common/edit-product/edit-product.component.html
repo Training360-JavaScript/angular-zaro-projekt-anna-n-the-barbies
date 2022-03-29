@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header card-header-warning">
+      <h4 class="card-title">Termék hozzáadása vagy módosítása</h4>
+      <p class="card-category">A *-gal jelölt mezők kitöltése kötelező</p>
+    </div>
+    <div class="card-body">
+      <div class="row mb-3 ml-3">
+        <div *ngIf="product" class="col-12">
+          <form #productForm="ngForm" (ngSubmit)="onUpdate(product)" class="mt-3">
+            <input [(ngModel)]="product.id" name="id" type="hidden">
+            <div class="row mb-3">
+              <h3>
+                A termék adatai
+              </h3>
+            </div>
+            <div class="row mb-5">
+              <div class="col-lg-4 col-md-12 mb-2">
+                <div class="form-group">
+                  <label for="name">Név *</label>
+                  <input [(ngModel)]="product.name" name="name" type="text" class="form-control" pattern="[A-Z].{2,}"
+                  id="name" required>
+                  <div [hidden]="productForm.controls['name']?.valid" class="error-message">
+                    Adja meg a termék nevét. A név legalább 3 betűből álljon, és nagybetűvel kezdődjön.
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-12 mb-2">
+                <div class="form-group">
+                  <label for="type">Típus *</label>
+                  <input [(ngModel)]="product.type" name="type" type="text" class="form-control" pattern="[A-Z].{2,}"
+                  id="type" required>
+                  <div [hidden]="productForm.controls['type']?.valid" class="error-message">
+                    Adja meg a termék típusát. A típus neve legalább 3 betűből álljon, és nagybetűvel kezdődjön.
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-12">
+                <div class="form-group">
+                  <label for="description">Leírás *</label>
+                  <textarea [(ngModel)]="product.description" name="description" type="text" class="form-control"
+                  id="description" required></textarea>
+                  <div [hidden]="productForm.controls['description']?.valid" class="error-message">
+                    Adja meg a termék jellemzőit.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row mb-5">
+              <div class="col-lg-3 col-md-12">
+                <div class="form-group">
+                  <label for="catID">Kategória azonosítója *</label>
+                  <input [(ngModel)]="product.catID" name="catID" type="number" class="form-control"  min="1" id="catID"
+                  required>
+                  <div [hidden]="productForm.controls['catID']?.valid" class="error-message">
+                    Adja meg a kategória azonosítóját. Az azonosító egy szám.
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-12">
+                <div class="form-group">
+                  <label for="price">Ár *</label>
+                  <input [(ngModel)]="product.price" name="price" type="number" class="form-control"  min="1" id="price"
+                  required>
+                  <div [hidden]="productForm.controls['price']?.valid" class="error-message">
+                    Adja meg a termék árát.
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" [(ngModel)]="product.featured"
+                    name="featured" type="checkbox" id="featured">
+                  <label class="custom-control-label" for="featured">Kiemelt</label>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" [(ngModel)]="product.active"
+                    name="active" type="checkbox" id="active">
+                  <label class="custom-control-label" for="active">Aktív</label>
+                </div>
+              </div>
+            </div>
+
+            <button [disabled]="productForm.invalid" type="submit" class="btn btn-warning mr-3">Mentés</button>
+            <button [hidden]="product.id === 0" (click)="onRemove(product)" type="button"
+              class="btn btn-default mr-3">Törlés</button>
+            <button routerLink="/product" type="button" class="btn btn-secondary">Mégsem</button>
+          </form>
+        </div>
+      </div>
+    </div>

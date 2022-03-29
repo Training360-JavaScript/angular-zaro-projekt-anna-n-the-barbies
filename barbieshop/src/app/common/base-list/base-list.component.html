@@ -1,0 +1,183 @@
+<div class="card">
+  <div class="card-header card-header-{{color}}">
+    <h4 class="card-title">{{tableTitle}}</h4>
+    <!-- <p class="card-category">{{tableSubTitle}}</p> -->
+    <button [routerLink]="['/', 'edit-'+[componentName],'0']"
+      class="btn text-white bg-transparent btn-block h5 m-0 p-0">
+      {{buttonText}} <i class="fa fa-plus-square" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div class="card-content mt-4">
+
+    <!-- <mat-paginator class="d-flex justify-content-start ml-2"
+      [hidden]="!tableEnabled" showFirstLastButtons
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100, 250, 500, 1000]"
+      [length]="List?.data?.length">
+    </mat-paginator> -->
+  
+
+    <div *ngIf="tableEnabled; else spinner">
+
+      <mat-form-field appearance="standard" class="float-left ml-4">
+        <mat-label>Keresés</mat-label>
+        <input matInput (keyup)="applyFilter()" [(ngModel)]="phrase"
+        placeholder="kifejezés..." #input>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard" class="ml-4">
+        <mat-label>oszlopok szerint</mat-label>
+        <mat-select [(value)]="filterKey" (selectionChange)="applyFilter()">
+          <mat-option value="">bármilyen egyezés</mat-option>
+          <mat-option *ngFor="let key of selectedColumns" [value]="key">
+            {{key | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard" class="ml-4">
+        <mat-label>oszlopok megjelenítése</mat-label>
+        <mat-select [(value)]="selectedColumns" multiple
+          (selectionChange)="colSelectionChanged()"
+          matTooltip="az adatok megjelenítéséhez min. egy oszlopot ki kell választania !"
+          matTooltipPosition="above"
+          TooltipTouchGestures="auto">
+            <mat-option *ngFor="let key of keys" [value]="key">
+             {{key | titlecase }}
+            </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+      <div class="table-responsive">
+
+        <table mat-table [dataSource]="List" class="mat-elevation-z8 w-100"          
+          matSort
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event)">
+
+          <ng-container *ngFor="let col of selectedColumns" [matColumnDef]="col">
+
+            <th mat-header-cell cdkDrag *matHeaderCellDef mat-sort-header>
+              <span class="lead"
+                [matTooltipDisabled]="!isNestedObject(List.data[0][col])"
+                matTooltip="rendezés: {{sortPropIfObject | uppercase}} tulajdonság szerint"
+                matTooltipPosition="above"
+                TooltipTouchGestures="auto">
+                {{ col | titlecase }}
+              </span>
+            </th>
+
+            <td mat-cell *matCellDef="let item">
+
+              <ng-container *ngIf="isBoolean(item[col]);else booleanFalse">
+                <div class="text-center">
+                  <i *ngIf="item[col] === true" class="fa fa-check"></i>
+                  <i *ngIf="item[col] === false" class="fa fa-times"></i>
+                </div>
+              </ng-container>
+
+              <ng-template #booleanFalse>
+                <ng-container *ngIf="col === currencyPipeOn; else noPipe">
+                  {{item[col] | customCurrency}}
+                </ng-container>
+                <ng-template #noPipe>
+                  <ng-container *ngIf="isNestedObject(item[col]); else noGetter">
+                    {{item[col].full}}
+                  </ng-container>
+                  <ng-template #noGetter>
+                    {{item[col]}}
+                  </ng-template>
+                </ng-template>
+              </ng-template>
+
+            </td>
+
+            <td mat-footer-cell *matFooterCellDef class="font-weight-bold">
+              <ng-container *ngIf="col === 'id'; else noId">
+                {{ numberOfRow | customNumber }} db
+              </ng-container>
+              <ng-template #noId>
+                <ng-container *ngIf="col === columnAmountOn; else noSum">
+                  {{ sumOfAmount | customNumber }} {{ valueType }}
+                </ng-container>
+                <ng-template #noSum>
+                  {{ '-' }}
+                </ng-template>
+              </ng-template>
+            </td>
+
+          </ng-container>
+
+          <ng-container matColumnDef="options">
+            <th mat-header-cell cdkDrag *matHeaderCellDef
+              matTooltip="az oszlopok sorrendje tetszőlegesen változtatható! (drag-drop)"
+              matTooltipPosition="above"
+              TooltipTouchGestures="auto">
+                <span class="lead">Options</span>
+            </th>
+            <td mat-cell *matCellDef="let item">
+              <div class="btn-group">
+                <button mat-icon-button [hidden]="buttonHiddenOpts.edit"
+                  [routerLink]="['/', 'edit-'+[componentName], item.id]"
+                  color="primary"
+                  matTooltip="Szerkesztés"
+                  matTooltipPosition="above"
+                  TooltipTouchGestures="auto"
+                  matTooltipClass="bg-primary">
+                    <span class="material-icons">edit</span>
+                </button>
+                <button mat-icon-button [disabled]="buttonHiddenOpts.delete"
+                  (click)="onRemove(item.id)" color="warn"
+                  matTooltip="Törlés"
+                  matTooltipPosition="above"
+                  TooltipTouchGestures="auto"
+                  matTooltipClass="bg-danger">
+                    <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              <span class="font-weight-bold">Összesen</span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky:true"></tr>
+
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="5">
+              <span class="lead">
+                Nincs találat erre a kifejezésre: "{{input.value}}"
+              </span>
+            </td>
+          </tr>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    <mat-paginator
+      [hidden]="!tableEnabled"
+      showFirstLastButtons
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100, 250, 500, 1000]"
+      [length]="List?.data?.length">
+    </mat-paginator>
+
+  </div>
+
+</div>
+
+
+<!-- spinner -->
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

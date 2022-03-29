@@ -1,0 +1,43 @@
+<div class="sidebar" data-color="danger" data-background-color="white">
+  <div class="logo">
+    <a routerLink="/" class="simple-text logo-mini">
+      Webshop
+    </a>
+  </div>
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" routerLink="/">
+          <i class="material-icons">dashboard</i>
+          <p>Dashboard</p>
+        </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" routerLink="/product">
+          <i class="material-icons">shop_two</i>
+          <p>Termékek</p>
+        </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" routerLink="/customer">
+          <i class="material-icons">group</i>
+          <p>Vásárlók</p>
+        </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" routerLink="/order">
+          <i class="material-icons">shopping_cart</i>
+          <p>Rendelések</p>
+        </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" routerLink="/bill">
+          <i class="material-icons">storage</i>
+          <p>Számlák</p>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</div>
